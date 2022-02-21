@@ -11,14 +11,14 @@
                     <th>Position</th>
                     <th>Action</th>
                     <tbody>
-                        <tr v-for="item in items" :key="item._id">
-                            <td>{{item._id}}</td>
+                        <tr v-for="item in todos" :key="item._id">
+                            <td>{{item.name}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.email}}</td>
                             <td>{{item.position}}</td>
                             <td class="text-center">
                                 <button @click="edit(item)" class="btn btn-warning btn sm">Edit</button>
-                                <button @click="delete_(item)" class="btn btn-warning btn sm">Delete</button>
+                                <button @click="deleteItem(item)" class="btn btn-warning btn sm">Delete</button>
                             </td>
                         </tr>
                     </tbody>
@@ -27,23 +27,19 @@
             <div class="col-md-6">
                 <form>
                     <div class="form-group">
-                        <label for="id">ID</label>
-                        <input v-model="input_id" type="text" class="form-control">
-                    </div>
-                    <div class="form-group">
                         <label for="name">Name</label>
-                        <input v-model="input_name" type="text" class="form-control">
+                        <input v-model="form.name" type="text" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input v-model="input_email" type="text" class="form-control">
+                        <input v-model="form.email" type="text" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="email">Position</label>
-                        <input v-model="input_position" type="text" class="form-control">
+                        <input v-model="form.position" type="text" class="form-control">
                     </div>
-                    <button @click.prevent="save" class="btn btn-primary">SAVE</button>
-                    <button @click.prevent="update(input_id)" class="btn btn-success">UPDATE</button>
+                    <button @click="save" type="button" class="btn btn-primary">SAVE</button>
+                    <button @click.prevent="authenticate" class="btn btn-success">UPDATE</button>
                 </form>
             </div>
         </div>
@@ -52,5 +48,41 @@
 </template>
 
 <script>
-export default {};
+export default {
+    data() {
+        return {
+            form: {
+                name: '',
+                email: '',
+                position: '',
+            }
+        }
+    },
+    pouch: {
+        // The simplest usage. queries all documents from the "todos" pouch database and assigns them to the "todos" vue property.
+        todos: {
+            /*empty selector*/
+        }
+    },
+    mounted() {
+        //  this.$pouch.sync('todos', 'http://khscouchdb3.alpha.cloud-connect.asia/todos');
+        // this.$pouch.sync('todos', 'http://10.0.1.12:5984/todos');
+    },
+    methods: {
+        authenticate() {
+            this.$pouch.useAuth("admin", "cc123***")
+
+        },
+        deleteItem(todo) {
+            this.$pouch.remove('todos', todo)
+        },
+        async save() {
+            try {
+                this.$pouch.post('todos', this.form)
+            } catch (error) {
+                console.log('error', error)
+            }
+        }
+    },
+};
 </script>
