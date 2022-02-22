@@ -1,6 +1,3 @@
-    
-    window_db = new PouchDB('users')
-
     new Vue({
         data(){
             return{
@@ -53,30 +50,30 @@
             vm.input.name = item.name
             vm.input.email = item.email
         },
-        update(id){
-            var _id = id - 1, vm = this
-            Object.assign(this.item[_id], vm.input)
-            var name = vm.input.name,
-                email= vm.input.email;
-            db.get(id).then(function(doc){
-                return db.put({
-                    _id: id,
-                    _rev: doc._rev,
-                    name: name,
-                    email: email
+            update(id){
+                var _id = id - 1, vm = this
+                Object.assign(this.item[_id], vm.input)
+                var name = vm.input.name,
+                    email= vm.input.email;
+                db.get(id).then(function(doc){
+                    return db.put({
+                        _id: id,
+                        _rev: doc._rev,
+                        name: name,
+                        email: email
+                    })
+                }).then(function(){
+                    vm.clear()
+                }).catch (function(error){
+                    console.log(error)
                 })
-            }).then(function(){
-                vm.clear()
-            }).catch (function(error){
-                console.log(error)
-            })
-        },
-        clear(){
-            var vm = this
-            vm.input._id = ''
-            vm.input.name = ''
-            vm.input.email = ''
-        },
+            },
+            clear(){
+                var vm = this
+                vm.input._id = ''
+                vm.input.name = ''
+                vm.input.email = ''
+            },
         delete_(item){
             var vm = this 
             db.get(item._id).then(function(doc){

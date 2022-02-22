@@ -5,19 +5,19 @@
         <div class="row">
             <div class="col-md-6">
                 <table class="table table-bordered table-striped">
-                    <th>ID</th>
+                    <!-- <th>ID</th> -->
                     <th>Name</th>
                     <th>Email</th>
                     <th>Position</th>
                     <th>Action</th>
                     <tbody>
                         <tr v-for="item in todos" :key="item._id">
-                            <td>{{item.name}}</td>
+                            <!-- <td>{{item._id}}</td> -->
                             <td>{{item.name}}</td>
                             <td>{{item.email}}</td>
                             <td>{{item.position}}</td>
                             <td class="text-center">
-                                <button @click="edit(item)" class="btn btn-warning btn sm">Edit</button>
+                                <button @click="editClick(item)" class="btn btn-warning btn sm">EDIT</button>
                                 <button @click="deleteItem(item)" class="btn btn-warning btn sm">Delete</button>
                             </td>
                         </tr>
@@ -39,7 +39,7 @@
                         <input v-model="form.position" type="text" class="form-control">
                     </div>
                     <button @click="save" type="button" class="btn btn-primary">SAVE</button>
-                    <button @click.prevent="authenticate" class="btn btn-success">UPDATE</button>
+                    <button @change="update" type="button" class="btn btn-success">UPDATE</button>
                 </form>
             </div>
         </div>
@@ -65,7 +65,8 @@ export default {
         }
     },
     mounted() {
-        //  this.$pouch.sync('todos', 'http://khscouchdb3.alpha.cloud-connect.asia/todos');
+        this.$pouch.sync('todos', 'http://admin:cc123***@khscouchdb1.alpha.cloud-connect.asia/todos');
+        //   this.$pouch.useAuth("admin", "cc123***")
         // this.$pouch.sync('todos', 'http://10.0.1.12:5984/todos');
     },
     methods: {
@@ -79,8 +80,28 @@ export default {
         async save() {
             try {
                 this.$pouch.post('todos', this.form)
+               // this.clear()
             } catch (error) {
                 console.log('error', error)
+            }
+        },
+        clear(  ){
+            
+        },
+        editClick(todo) {
+            try{
+            this.name = todo.name,
+            this.email = todo.email,
+            this.position = todo.position
+            } catch (err){
+            console.log('error' , err)
+            }
+        },
+        async update() {
+            try{
+                this.$pouch.put('todos' , this.form , {})
+            }catch (err){
+                console.log('error' , err)
             }
         }
     },
