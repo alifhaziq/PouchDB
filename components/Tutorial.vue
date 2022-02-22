@@ -17,7 +17,7 @@
                             <td>{{item.email}}</td>
                             <td>{{item.position}}</td>
                             <td class="text-center">
-                                <button @click="editClick(item)" class="btn btn-warning btn sm">EDIT</button>
+                                <button @click="editClick(item)" class="btn btn-warning btn sm">Edit</button>
                                 <button @click="deleteItem(item)" class="btn btn-warning btn sm">Delete</button>
                             </td>
                         </tr>
@@ -39,7 +39,7 @@
                         <input v-model="form.position" type="text" class="form-control">
                     </div>
                     <button @click="save" type="button" class="btn btn-primary">SAVE</button>
-                    <button @change="update" type="button" class="btn btn-success">UPDATE</button>
+                    <button @click="update" type="button" class="btn btn-success">UPDATE</button>
                 </form>
             </div>
         </div>
@@ -52,6 +52,7 @@ export default {
     data() {
         return {
             form: {
+                _id:'',
                 name: '',
                 email: '',
                 position: '',
@@ -79,6 +80,7 @@ export default {
         },
         async save() {
             try {
+                this.form._id = null;
                 this.$pouch.post('todos', this.form)
                // this.clear()
             } catch (error) {
@@ -90,15 +92,19 @@ export default {
         },
         editClick(todo) {
             try{
-            this.name = todo.name,
-            this.email = todo.email,
-            this.position = todo.position
+            console.log('todos' , todo)
+            this.form = todo
+            // this.form._id = todo._id
+            // this.form.name = todo.name,
+            // this.form.email = todo.email,
+            // this.form.position = todo.position
             } catch (err){
             console.log('error' , err)
             }
         },
         async update() {
             try{
+
                 this.$pouch.put('todos' , this.form , {})
             }catch (err){
                 console.log('error' , err)
