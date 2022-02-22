@@ -88,7 +88,6 @@ export default {
                 }
                 this.$pouch.post('todos', payload)
                 this.clear()
-                // this.clear()
             } catch (error) {
                 console.log('error', error)
             }
@@ -109,10 +108,6 @@ export default {
                 }
                 this.id = todo._id
                 this.rev = todo._rev
-                // this.form._id = todo._id
-                // this.form.name = todo.name,
-                // this.form.email = todo.email,
-                // this.form.position = todo.position
             } catch (err) {
                 console.log('error', err)
             }
