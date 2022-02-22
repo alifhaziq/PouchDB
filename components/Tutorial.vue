@@ -52,11 +52,12 @@ export default {
     data() {
         return {
             form: {
-                _id:'',
                 name: '',
                 email: '',
                 position: '',
-            }
+            },
+            id: '',
+            rev: '',
         }
     },
     pouch: {
@@ -80,34 +81,53 @@ export default {
         },
         async save() {
             try {
-                this.form._id = null;
-                this.$pouch.post('todos', this.form)
-               // this.clear()
+                const payload = {
+                    name: this.form.name,
+                    email: this.form.email,
+                    position: this.form.position,
+                }
+                this.$pouch.post('todos', payload)
+                this.clear()
+                // this.clear()
             } catch (error) {
                 console.log('error', error)
             }
         },
-        clear(  ){
-            
+        clear() {
+            this.form = {
+                name: '',
+                email: '',
+                position: '',
+            }
         },
         editClick(todo) {
-            try{
-            console.log('todos' , todo)
-            this.form = todo
-            // this.form._id = todo._id
-            // this.form.name = todo.name,
-            // this.form.email = todo.email,
-            // this.form.position = todo.position
-            } catch (err){
-            console.log('error' , err)
+            try {
+                this.form = {
+                    name: todo.name,
+                    email: todo.email,
+                    position: todo.position
+                }
+                this.id = todo._id
+                this.rev = todo._rev
+                // this.form._id = todo._id
+                // this.form.name = todo.name,
+                // this.form.email = todo.email,
+                // this.form.position = todo.position
+            } catch (err) {
+                console.log('error', err)
             }
         },
         async update() {
-            try{
-
-                this.$pouch.put('todos' , this.form , {})
-            }catch (err){
-                console.log('error' , err)
+            try {
+                const payload = {
+                    ...this.form,
+                    _id: this.id,
+                    _rev: this.rev
+                }
+                this.$pouch.put('todos', payload, {})
+                this.clear()
+            } catch (err) {
+                console.log('error', err)
             }
         }
     },
